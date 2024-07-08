@@ -1,0 +1,21 @@
+/*************************************************************
+ * File   : 09_04misuse.c                                    *
+ * Date   : 2024-07-05                                       *
+ * Purpose: uses a function incorrectly                      *
+ *************************************************************/
+#include <stdio.h>
+int imax();		// old-style declaration
+int main(void)
+{
+	printf("The maximum of %d and %d is %d.\n", 3, 5, imax(3));
+	printf("The maximum of %d and %d is %d.\n", 
+		3.0, 5.0, imax(3.0, 5.0));
+
+	return 0;
+}
+
+int imax(n, m)
+int n, m;
+{
+	return (n > m? n: m);
+}
