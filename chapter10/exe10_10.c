@@ -12,7 +12,7 @@
 #define ROWS    3
 #define COLS    5
 void show_arr(const float arr[][COLS], int row);
-void mult_arr(float arr[][COLS], int row);
+void dbl_arr(float arr[][COLS], int row);
 int main(void)
 {
     float rain[ROWS][COLS] = {
@@ -24,7 +24,7 @@ int main(void)
 
     printf("Original:\n");
     show_arr(rain, ROWS);
-    mult_arr(rain, ROWS);
+    dbl_arr(rain, ROWS);
     printf("After:\n");
     show_arr(rain, ROWS);
 
@@ -43,7 +43,7 @@ void show_arr(const float arr[][COLS], int row)
     }
 }
 
-void mult_arr(float arr[][COLS], int row)
+void dbl_arr(float arr[][COLS], int row)
 {
      int i, j;
 
