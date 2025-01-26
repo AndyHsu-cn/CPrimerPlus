@@ -6,6 +6,7 @@
  *  Test the function in a simple program.
  */
 #include <stdio.h>
+// add a commit just for commit once to Github
 int max_arr_index(const double arr[], int n);
 int main(void)
 {
