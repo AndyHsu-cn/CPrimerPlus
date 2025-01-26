@@ -6,7 +6,7 @@
  *  function in a simple program.
  */
 #include <stdio.h>
-int max_of_arr(const int arr[], int n);
+int max_of_arr(int arr[], int n);
 int main(void)
 {
     int arr[5] = {3, 4, 5, 8, 4};
@@ -16,7 +16,7 @@ int main(void)
     return 0;
 }
 
-int max_of_arr(const int arr[], int n)
+int max_of_arr(int arr[], int n)
 {
     int max_value, ind;
 
