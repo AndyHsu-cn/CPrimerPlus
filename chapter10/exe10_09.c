@@ -14,7 +14,7 @@ void add_array(const double source1[], const double source2[], double target[], 
 void show_array(const double arr[], int n);
 int main(void)
 {
-    double arr1[NUM] = {1, 2, 4, 5};
+    double arr1[NUM] = {2, 4, 5, 8};
     double arr2[NUM] = {1, 0, 4, 6};
     double arr3[NUM];
 
