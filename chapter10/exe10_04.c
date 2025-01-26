@@ -6,7 +6,7 @@
  *  Test the function in a simple program.
  */
 #include <stdio.h>
-int max_arr_index(const double arr[], int n);
+int max_arr_index(double arr[], int n);
 int main(void)
 {
     double arr[5] = {3.3, 4.4, 5.5, 8.8, 4.4};
@@ -16,7 +16,7 @@ int main(void)
     return 0;
 }
 
-int max_arr_index(const double arr[], int n)
+int max_arr_index(double arr[], int n)
 {
     int max_index = 0;
     int ind;
