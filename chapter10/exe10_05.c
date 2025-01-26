@@ -2,11 +2,11 @@
  *  2025-01-26
  *  modified by Andy Hsu
  * 
- *  Write a function that returns the difference between the largest and smallest
+ *  Write a function that returns the difference between the largest and smallest\
  *  elements of an array-of-double. Test the function in a simple program.
  */
 #include <stdio.h>
-double largest_diff(const double ar[], int n);
+double largest_diff(double ar[], int n);
 int main(void)
 {
     double ar[] = {10, 20, 30, 5, 15, 25};
@@ -16,7 +16,7 @@ int main(void)
     return 0;
 }
 
-double largest_diff(const double ar[], int n)
+double largest_diff(double ar[], int n)
 {
     double max, min;
     int ind;
