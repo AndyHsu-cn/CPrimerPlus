@@ -58,6 +58,7 @@ int main(void)
                 break;
             case 'm':
                 editbook(&library[count]);
+                count++;
                 break;
             default:
                 puts("Error enter a n, d or m:");
@@ -88,6 +89,7 @@ int main(void)
         fputs("Can't open book.dat file\n", stderr);
         exit(1);
     }
+    rewind(pbooks);
     if(count > 0)
     {
         printf("Here is the list of your books:\n");
