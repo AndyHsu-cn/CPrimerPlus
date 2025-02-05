@@ -34,7 +34,7 @@
 #include <ctype.h>
 #define SEAT_CAPACITY   12
 #define NAMELEN         20
-struct fleet
+struct Seat
 {
     int seat_id;
     bool is_assigned;
@@ -42,25 +42,26 @@ struct fleet
     char fname[NAMELEN];
 };
 const char FILE_NAME[NAMELEN] = "exe14_08data.txt";
+struct Seat seats[SEAT_CAPACITY];
 char get_first(void);
 char show_menu(void);
-int get_empty_num(const struct fleet * pp, int num);
-void show_empty(const struct fleet * pp, int num);
-void assigncustomer(struct fleet *pp);
-bool is_seat_avail(const struct fleet * pp, int tmp_seat_id);
-void show_alphabetical(const struct fleet * pp, int num);
-void deletecustomer(struct fleet *pp);
+int get_empty_num(void);
+void show_empty(void);
+void assigncustomer(void);
+bool is_seat_avail(int tmp_seat_id);
+void show_alphabetical(void);
+void deletecustomer(void);
 int main(void)
 {
     FILE * fp;
-    struct fleet plane[SEAT_CAPACITY];
+    
     int i;
     int choice;
-    int size = sizeof(struct fleet);
+    int size = sizeof(struct Seat);
 
-    // initialize struct fleet array, seat identification number range from 0 to 11
+    // initialize struct Seat array, seat identification number range from 0 to 11
     for(i = 0; i < SEAT_CAPACITY; i++)
-        plane[i] = (struct fleet){i, false, "", ""};
+        seats[i] = (struct Seat){i, false, "", ""};
     #if 0
     // initialize data file
     if((fp = fopen(FILE_NAME, "wb")) == NULL)
@@ -79,11 +80,10 @@ int main(void)
         exit(1);
     }
     i = 0;
-    while (i<SEAT_CAPACITY && fread(&plane[i], size, 1, fp) == 1)
+    printf("%7s %8s %*s %*s\n", "seat_id", "assigned", NAMELEN, "first name", NAMELEN, "last name");
+    while (i<SEAT_CAPACITY && fread(&seats[i], size, 1, fp) == 1)
     {
-        if(i == 0)
-            printf("%7s %8s %*s %*s\n", "seat_id", "assigned", NAMELEN, "first name", NAMELEN, "last name");
-        printf("%7d %8d %*s %*s\n", plane[i].seat_id, plane[i].is_assigned, NAMELEN, plane[i].fname, NAMELEN, plane[i].lname);
+        printf("%7d %8d %*s %*s\n", seats[i].seat_id, seats[i].is_assigned, NAMELEN, seats[i].fname, NAMELEN, seats[i].lname);
         i++;
     }
     
@@ -94,19 +94,19 @@ int main(void)
         switch(choice)
         {
             case 'a':
-                printf("Number of empty seat is %d\n", get_empty_num(plane, SEAT_CAPACITY));
+                printf("Number of empty seat is %d\n", get_empty_num());
                 break;
             case 'b':
-                show_empty(plane, SEAT_CAPACITY);
+                show_empty();
                 break;
             case 'c':
-                show_alphabetical(plane, SEAT_CAPACITY);
+                show_alphabetical();
                 break;
             case 'd':
-                assigncustomer(plane);
+                assigncustomer();
                 break;
             case 'e':
-                deletecustomer(plane);
+                deletecustomer();
                 break;
             case 'f':
                 break;
@@ -121,7 +121,8 @@ int main(void)
         fprintf(stderr, "Can't open %s for write.\n", FILE_NAME);
         exit(1);
     }
-    fwrite(plane, size, SEAT_CAPACITY, fp);
+    fwrite(seats, size, SEAT_CAPACITY, fp);
+    fclose(fp);
     printf("\nBye.\n");
 
     return 0;
@@ -158,36 +159,36 @@ char get_first(void)
     return ch;
 }
 
-int get_empty_num(const struct fleet * pp, int num)
+int get_empty_num()
 {
     int empty_num = 0;
     int i;
 
-    for(i = 0; i < num; i++)
-        if(pp[i].is_assigned == false)
+    for(i = 0; i < SEAT_CAPACITY; i++)
+        if(seats[i].is_assigned == false)
             empty_num++;
     return empty_num;
 }
 
-void show_empty(const struct fleet * pp, int num)
+void show_empty()
 {
     int i;
     int count = 0;
 
     puts("Empty seats are: ");
-    for(i = 0; i < num; i++)
+    for(i = 0; i < SEAT_CAPACITY; i++)
     {
         if(i == 0)
             printf("%7s %8s %*s %*s\n", "seat_id", "assigned", NAMELEN, "first name", NAMELEN, "last name");
-        if(pp[i].is_assigned == false)
+        if(seats[i].is_assigned == false)
         {                
-            printf("%7d %8d %*s %*s\n", pp[i].seat_id, pp[i].is_assigned, NAMELEN, pp[i].fname, NAMELEN, pp[i].lname);
+            printf("%7d %8d %*s %*s\n", seats[i].seat_id, seats[i].is_assigned, NAMELEN, seats[i].fname, NAMELEN, seats[i].lname);
             count++;
         }
     }    
 }
 
-void assigncustomer(struct fleet *pp)
+void assigncustomer()
 {
     int seat_id;
 
@@ -195,18 +196,18 @@ void assigncustomer(struct fleet *pp)
     scanf("%d", &seat_id);
     while(getchar() != '\n')
         ;
-    if(is_seat_avail(pp, seat_id))
+    if(is_seat_avail(seat_id))
     {
-        pp[seat_id].is_assigned = true;
+        seats[seat_id].is_assigned = true;
         printf("Enter passenger first name: ");
-        gets(pp[seat_id].fname);
+        gets(seats[seat_id].fname);
 	    printf("Enter passenger last name: ");
-        gets(pp[seat_id].lname);
+        gets(seats[seat_id].lname);
     }else
         puts("Seat number not available.");
 }
 
-bool is_seat_avail(const struct fleet * pp, int tmp_seat_id)
+bool is_seat_avail(int tmp_seat_id)
 {
     bool is_avail = true;
     int i;
@@ -215,27 +216,27 @@ bool is_seat_avail(const struct fleet * pp, int tmp_seat_id)
         is_avail = false;
     else{
         for(i = 0; i < SEAT_CAPACITY; i++)
-        if(((pp+i)->seat_id==tmp_seat_id) && ((pp+i)->is_assigned)==true)
+        if(((seats+i)->seat_id==tmp_seat_id) && ((seats+i)->is_assigned)==true)
             is_avail = false;
     }
 
     return is_avail;
 }
 
-void show_alphabetical(const struct fleet plane[], int num)
+void show_alphabetical()
 {
     int i;
 
-    for(i = 0; i < num; i++)
+    for(i = 0; i < SEAT_CAPACITY; i++)
     {
         if(i == 0)
             printf("%7s %8s %*s %*s\n", "seat_id", "assigned", NAMELEN, "first name", NAMELEN, "last name");
-        if(plane[i].is_assigned == true)
-            printf("%7d %8d %*s %*s\n", plane[i].seat_id, plane[i].is_assigned, NAMELEN, plane[i].fname, NAMELEN, plane[i].lname);
+        if(seats[i].is_assigned == true)
+            printf("%7d %8d %*s %*s\n", seats[i].seat_id, seats[i].is_assigned, NAMELEN, seats[i].fname, NAMELEN, seats[i].lname);
     }
 }
 
-void deletecustomer(struct fleet *pp)
+void deletecustomer()
 {
     int seat_id;
 
@@ -243,11 +244,11 @@ void deletecustomer(struct fleet *pp)
     scanf("%d", &seat_id);
     while(getchar() != '\n')
         ;
-    if(seat_id>=0 && seat_id<=SEAT_CAPACITY && pp[seat_id].is_assigned==true)
+    if(seat_id>=0 && seat_id<=SEAT_CAPACITY && seats[seat_id].is_assigned==true)
     {
-        pp[seat_id].is_assigned = false;
-        strcpy(pp[seat_id].fname, "");
-        strcpy(pp[seat_id].lname, "");
+        seats[seat_id].is_assigned = false;
+        strcpy(seats[seat_id].fname, "");
+        strcpy(seats[seat_id].lname, "");
     }else
         puts("Seat number not available.");
 }
